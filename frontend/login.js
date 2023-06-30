@@ -1,27 +1,19 @@
 async function postUserDetails(e) {
   e.preventDefault();
-  const userName = e.target.name.value;
   const email = e.target.email.value;
   const password = e.target.password.value;
 
   const obj = {
-    userName,
     email,
-    password,
-  };
-
+    password
+    };
+    
   try {
-    const response = await axios.post(
-      "http://localhost:8000/user/signup",
-      obj
-    );
-    if (response.status === 201) {
-      window.location.href = "./login.html";
-    } else {
-      throw new Error("Failed to signup");
-    }
+    const response = await axios.post("http://localhost:8000/user/login", obj);
+    if (response.status === 200) {
+      console.log("SuccessFully logged in")
+    } 
 
-    document.getElementById("name").value = "";
     document.getElementById("email").value = "";
     document.getElementById("password").value = "";
   } catch (err) {
