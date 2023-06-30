@@ -15,6 +15,7 @@
     "nodemon": "^2.0.22"
   },
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "mysql2": "^3.4.2",
     "sequelize": "^6.32.1"
