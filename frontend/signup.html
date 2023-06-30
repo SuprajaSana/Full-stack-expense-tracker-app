@@ -19,7 +19,7 @@
       </div>
       <div style="margin-top: 20px">
         <label style="margin-right: 20px">Enter Email</label>
-        <input type="email" name="email" id="email" required />
+        <input type="email" name="email" id="email"  />
       </div>
       <div style="margin-top: 20px">
         <label style="margin-right: 10px">Enter Password</label>
@@ -31,38 +31,11 @@
         Signup
       </button>
       <div style="margin-top: 20px">
-        <a href="D:\full stack expense tracker app\frontend\login.html">Already have an account?Login</a>
+        <a href="./login.html">Already have an account?Login</a>
       </div>
     </form>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
-  <script>
-    async function postUserDetails(e) {
-      e.preventDefault();
-      const userName = e.target.name.value;
-      const email = e.target.email.value;
-      const password = e.target.password.value;
-
-      const obj = {
-        userName,
-        email,
-        password,
-      };
-
-      console.log(obj)
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/add/userdetails/signup",
-          obj
-        );
-        console.log(response.data);
-
-        document.getElementById("name").value = "";
-        document.getElementById("email").value = "";
-        document.getElementById("password").value = "";
-      } catch (err) {
-        console.log(err);
-      }
-    }
+  <script src="./signup.js">
   </script>
 </body>
