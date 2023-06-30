@@ -1,5 +1,6 @@
 const UserDetails = require("../models/users");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 function isStringValid(s) {
   if (s == undefined || s.length === 0) {
@@ -7,6 +8,10 @@ function isStringValid(s) {
   } else {
     return false;
   }
+}
+
+function generateAccessToken(id) {
+  return jwt.sign({userDetailId:id},"somethingSecretKey")
 }
 
 exports.signUpUserDetails = async (req, res, next) => {
@@ -66,7 +71,12 @@ exports.loginUserDetails = async (req, res, next) => {
           if (result === true) {
             res
               .status(200)
-              .json({ success: true, message: "User login successful" });
+              .json({
+                success: true,
+                message: "User login successful",
+                userDetail: result,
+                token: generateAccessToken(details[0].id),
+              });
           } else {
             res
               .status(401)

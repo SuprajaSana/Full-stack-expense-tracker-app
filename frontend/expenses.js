@@ -10,10 +10,12 @@ async function postExpenses(e) {
     amount,
   };
   try {
-    const response = await axios.post(
-      "http://localhost:8000/add/expenses",
-      obj
-    );
+  const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:8000/add/expenses",
+        obj,
+        { headers: { "Authorization": token } }
+      );
     showListOnScreen(response.data.expenses);
 
     for (var i = 0; i < response.data.length; i++) {
@@ -25,7 +27,8 @@ async function postExpenses(e) {
 }
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    const response = await axios.get("http://localhost:8000/get/expenses");
+    const token = localStorage.getItem("token");
+    const response = await axios.get("http://localhost:8000/get/expenses",{headers:{"Authorization":token}});
 
     for (var i = 0; i < response.data.expenses.length; i++) {
       showListOnScreen(response.data.expenses[i]);

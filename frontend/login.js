@@ -11,6 +11,7 @@ async function postUserDetails(e) {
   try {
     const response = await axios.post("http://localhost:8000/user/login", obj);
     if (response.status === 200) {
+      localStorage.setItem("token",response.data.token)
       window.location.href="./expenses.html"
     } 
 
