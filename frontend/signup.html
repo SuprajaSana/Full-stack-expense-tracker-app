@@ -31,7 +31,7 @@
         Signup
       </button>
       <div style="margin-top: 20px">
-        <a href="">Already have an account?Login</a>
+        <a href="D:\full stack expense tracker app\frontend\login.html">Already have an account?Login</a>
       </div>
     </form>
   </div>
@@ -48,6 +48,8 @@
         email,
         password,
       };
+
+      console.log(obj)
       try {
         const response = await axios.post(
           "http://localhost:8000/add/userdetails/signup",
