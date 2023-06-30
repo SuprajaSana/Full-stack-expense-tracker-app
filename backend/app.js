@@ -10,9 +10,11 @@ const app = express();
 app.use(cors());
 
 const userRoutes = require("./routes/users");
+const expensesRoutes = require("./routes/expenses");
 
 app.use(bodyParser.json({ extended: false }));
 
+app.use(expensesRoutes);
 app.use(userRoutes);
 
 sequelize

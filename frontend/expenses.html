@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+  <body>
+    <form onsubmit="postExpenses(event)">
+      <label>Choose Description</label>
+      <input id="description" type="text" name="choosedescription" required />
+      <label>Choose Category</label>
+      <input id="category" type="text" name="chooseacategory" required />
+      <label>Choose Expense Amount</label>
+      <input id="amount" type="number" name="chooseexpenseamount" required />
+      <button>Add Expense</button>
+    </form>
+    <ul id="listOfExpenses"></ul>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+  <script src="./expenses.js">
+  </script>
+</body>

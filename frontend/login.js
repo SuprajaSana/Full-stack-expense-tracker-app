@@ -11,7 +11,7 @@ async function postUserDetails(e) {
   try {
     const response = await axios.post("http://localhost:8000/user/login", obj);
     if (response.status === 200) {
-      console.log("SuccessFully logged in")
+      window.location.href="./expenses.html"
     } 
 
     document.getElementById("email").value = "";
