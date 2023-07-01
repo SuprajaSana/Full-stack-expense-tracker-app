@@ -10,6 +10,6 @@ router.get("/get/expenses",userAuthentication.authenticate, expensesController.g
 
 router.post("/add/expenses",userAuthentication.authenticate, expensesController.postAddExpenses);
 
-router.delete("/delete/expenses/:id", expensesController.postDeleteExpenses);
+router.delete("/delete/expenses/:id",userAuthentication.authenticate, expensesController.postDeleteExpenses);
 
 module.exports = router;

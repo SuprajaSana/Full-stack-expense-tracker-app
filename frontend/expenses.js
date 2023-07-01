@@ -48,9 +48,11 @@ function showListOnScreen(expenses) {
   parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
 async function deleteExpenses(id) {
-  try {
+    try {
+      const token = localStorage.getItem("token");
     const response = await axios.delete(
-      `http://localhost:8000/delete/expenses/${id}`
+      `http://localhost:8000/delete/expenses/${id}`,
+      { headers: { Authorization: token } }
     );
     removeExpensesFromScreen(id);
   } catch (err) {
