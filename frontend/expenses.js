@@ -10,12 +10,12 @@ async function postExpenses(e) {
     amount,
   };
   try {
-  const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:8000/add/expenses",
-        obj,
-        { headers: { "Authorization": token } }
-      );
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      "http://localhost:8000/add/expenses",
+      obj,
+      { headers: { Authorization: token } }
+    );
     showListOnScreen(response.data.expenses);
 
     for (var i = 0; i < response.data.length; i++) {
@@ -28,7 +28,9 @@ async function postExpenses(e) {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get("http://localhost:8000/get/expenses",{headers:{"Authorization":token}});
+    const response = await axios.get("http://localhost:8000/get/expenses", {
+      headers: { Authorization: token },
+    });
 
     for (var i = 0; i < response.data.expenses.length; i++) {
       showListOnScreen(response.data.expenses[i]);
@@ -48,8 +50,8 @@ function showListOnScreen(expenses) {
   parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
 async function deleteExpenses(id) {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
     const response = await axios.delete(
       `http://localhost:8000/delete/expenses/${id}`,
       { headers: { Authorization: token } }
@@ -65,3 +67,47 @@ function removeExpensesFromScreen(id) {
 
   parentNode.removeChild(childToBeDelete);
 }
+
+document.getElementById("razpay").onclick = async function (e) {
+  const token = localStorage.getItem("token");
+  const response = await axios.get("http://localhost:8000/purchase/premium", {
+    headers: { Authorization: token },
+  });
+  var obj = {
+    key: response.data.key_id,
+    order_id: response.data.order.id,
+    handler: async function (response) {
+      await axios.post(
+        "http://localhost:8000/purchase/updatetransactionstatus",
+        {
+          order_id: obj.order_id,
+          status: "SUCCESSFUL",
+          payment_id: response.razorpay_payment_id,
+        },
+        { headers: { Authorization: token } }
+      );
+      alert("TRANSACTION SUCCESSFUL");
+      const parentNode = document.getElementById("overalldata");
+      const childNode = document.getElementById("razpay");
+      parentNode.removeChild(childNode);
+      parentNode.innerHTML =
+        parentNode.innerHTML + "<h6>YOU ARE A PREMIUM USER NOW</h6>";
+    },
+  };
+  const rzpnew = new Razorpay(obj);
+  rzpnew.open();
+  e.preventDefault();
+
+  rzpnew.on("payment.failed", async function (response) {
+    await axios.post(
+      "http://localhost:8000/purchase/updatetransactionstatus",
+      {
+        order_id: obj.order_id,
+        status: "FAILED",
+        payment_id: response.razorpay_payment_id,
+      },
+      { headers: { Authorization: token } }
+    );
+    alert("TRANSACTION FAILED");
+  });
+};

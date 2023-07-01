@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
   <body>
+    <div id="overalldata">
     <form onsubmit="postExpenses(event)">
       <label>Choose Description</label>
       <input id="description" type="text" name="choosedescription" required />
@@ -10,7 +11,10 @@
       <input id="amount" type="number" name="chooseexpenseamount" required />
       <button>Add Expense</button>
     </form>
+    <button id="razpay" style="margin-top: 10px">Buy Premium</button>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <ul id="listOfExpenses"></ul>
+    </div>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
   <script src="./expenses.js">
   </script>
