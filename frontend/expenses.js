@@ -46,7 +46,7 @@ async function showLeaderBoard() {
       }
     );
     response.data.forEach((user) => {
-      showLeaderBoardDetails(user.name, user.totalExpenseAmount);
+      showLeaderBoardDetails(user.userName, user.totalExpenseAmount);
     });
   } catch (err) {
     console.log(err);
@@ -56,9 +56,8 @@ async function showLeaderBoard() {
 function showLeaderBoardDetails(name, expenseamount) {
   const parentHTML = document.getElementById("leaderBoardDetails");
   const parentNode = document.getElementById("leaderBoard");
-  const headHTML = "<h2>Leader Board</h2>";
   const childHTML = `<li> ${name} - ${expenseamount}</li>`;
-  parentHTML.innerHTML = "Leader Board"
+  parentHTML.innerHTML = "<h2>Leader Board</h2>"
   parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
 
