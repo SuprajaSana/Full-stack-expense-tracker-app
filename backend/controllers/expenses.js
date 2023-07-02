@@ -20,9 +20,17 @@ exports.postAddExpenses = async (req, res, next) => {
       amount: amount,
       description: description,
       category: category,
-    })
-    .then((expenses) => {
-      res.status(201).json({ expenses: expenses });
+    }).then(expenses => {
+        const totalExpensesAmount = Number(req.user.totalExpensesAmount) + Number(expenses.amount);
+        req.user.update(
+          {
+            totalExpensesAmount: totalExpensesAmount,
+          }
+        )
+          .then(async() => {
+            res.status(201).json({ expenses: expenses });
+          })
+          .catch((err) => res.status(500).json({ error: err }));
     })
     .catch((err) => res.status(500).json({ error: err }));
 };

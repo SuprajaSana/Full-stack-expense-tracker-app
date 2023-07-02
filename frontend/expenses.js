@@ -46,7 +46,7 @@ async function showLeaderBoard() {
       }
     );
     response.data.forEach((user) => {
-      showLeaderBoardDetails(user.userName, user.totalExpenseAmount);
+      showLeaderBoardDetails(user.userName, user.totalExpensesAmount);
     });
   } catch (err) {
     console.log(err);
