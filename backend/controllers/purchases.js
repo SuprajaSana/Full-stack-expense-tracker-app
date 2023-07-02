@@ -4,6 +4,8 @@ const razorpay = require("razorpay");
 
 const Order = require("../models/orders");
 
+const usersController = require("./users");
+
 exports.purchasePremium = async (req, res, next) => {
   try {
     const raz = new razorpay({
@@ -31,15 +33,24 @@ exports.purchasePremium = async (req, res, next) => {
 
 exports.updateTransactionStatus = async (req, res, next) => {
   try {
-    const { payment_id, order_id ,status} = req.body;
-      const order = await Order.findOne({ where: { orderid: order_id } });
+    const userDetailId = req.user.id;
+    const { payment_id, order_id, status } = req.body;
+    const order = await Order.findOne({ where: { orderid: order_id } });
     const p1 = order.update({ paymentid: payment_id, status: status });
     const p2 = req.user.update({ isPremiumUser: true });
     Promise.all([p1, p2])
       .then(() => {
         return res
           .status(202)
-          .json({ success: true, message: "Transaction Successful" });
+          .json({
+            success: true,
+            message: "Transaction Successful",
+            token: usersController.generateAccessToken(
+              userDetailId,
+              undefined,
+              true
+            ),
+          });
       })
       .catch((err) => {
         throw new Error(err);

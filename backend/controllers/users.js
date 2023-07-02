@@ -2,6 +2,8 @@ const UserDetails = require("../models/users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+require("dotenv").config();
+
 function isStringValid(s) {
   if (s == undefined || s.length === 0) {
     return true;
@@ -10,11 +12,11 @@ function isStringValid(s) {
   }
 }
 
-function generateAccessToken(id) {
-  return jwt.sign({userDetailId:id},"somethingSecretKey")
+const generateAccessToken=(id, name, isPremiumUser)=> {
+  return jwt.sign({userDetailId:id,name:name,isPremiumUser},process.env.TOKEN_SECRET)
 }
 
-exports.signUpUserDetails = async (req, res, next) => {
+const signUpUserDetails = async (req, res, next) => {
   const userName = req.body.userName;
   const email = req.body.email;
   const password = req.body.password;
@@ -51,7 +53,7 @@ exports.signUpUserDetails = async (req, res, next) => {
   });
 };
 
-exports.loginUserDetails = async (req, res, next) => {
+const loginUserDetails = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -75,7 +77,7 @@ exports.loginUserDetails = async (req, res, next) => {
                 success: true,
                 message: "User login successful",
                 userDetail: result,
-                token: generateAccessToken(details[0].id),
+                token: generateAccessToken(details[0].id,details[0].name,details[0].isPremiumUser),
               });
           } else {
             res
@@ -91,3 +93,10 @@ exports.loginUserDetails = async (req, res, next) => {
       res.status(500).json({ success: false, message: err });
     });
 };
+
+module.exports = {
+  signUpUserDetails,
+  loginUserDetails,
+  generateAccessToken
+}
+

@@ -25,9 +25,67 @@ async function postExpenses(e) {
     console.log(err);
   }
 }
+
+function showPremiumUser() {
+  const parentNode = document.getElementById("overalldata");
+  const childNode = document.getElementById("razpay");
+  parentNode.removeChild(childNode);
+  parentNode.innerHTML =
+    parentNode.innerHTML +
+    "<h3>YOU ARE A PREMIUM USER NOW</h3>" +
+    "<button onclick='showLeaderBoard()'>Show Leaderboard</button>";
+}
+
+async function showLeaderBoard() {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(
+      "http://localhost:8000/premium/showleaderboard",
+      {
+        headers: { Authorization: token },
+      }
+    );
+    response.data.forEach((user) => {
+      showLeaderBoardDetails(user.name, user.totalExpenseAmount);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function showLeaderBoardDetails(name, expenseamount) {
+  const parentHTML = document.getElementById("leaderBoardDetails");
+  const parentNode = document.getElementById("leaderBoard");
+  const headHTML = "<h2>Leader Board</h2>";
+  const childHTML = `<li> ${name} - ${expenseamount}</li>`;
+  parentHTML.innerHTML = "Leader Board"
+  parentNode.innerHTML = parentNode.innerHTML + childHTML;
+}
+
+function parseJwt(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const token = localStorage.getItem("token");
+    const decodeToken = parseJwt(token);
+    const isPremiumUser = decodeToken.isPremiumUser;
+    if (isPremiumUser) {
+      showPremiumUser();
+    }
     const response = await axios.get("http://localhost:8000/get/expenses", {
       headers: { Authorization: token },
     });
@@ -77,7 +135,7 @@ document.getElementById("razpay").onclick = async function (e) {
     key: response.data.key_id,
     order_id: response.data.order.id,
     handler: async function (response) {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:8000/purchase/updatetransactionstatus",
         {
           order_id: obj.order_id,
@@ -87,11 +145,8 @@ document.getElementById("razpay").onclick = async function (e) {
         { headers: { Authorization: token } }
       );
       alert("TRANSACTION SUCCESSFUL");
-      const parentNode = document.getElementById("overalldata");
-      const childNode = document.getElementById("razpay");
-      parentNode.removeChild(childNode);
-      parentNode.innerHTML =
-        parentNode.innerHTML + "<h6>YOU ARE A PREMIUM USER NOW</h6>";
+      localStorage.setItem("token", res.data.token);
+      showPremiumUser();
     },
   };
   const rzpnew = new Razorpay(obj);
