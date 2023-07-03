@@ -48,7 +48,7 @@ const signUpUserDetails = async (req, res, next) => {
       });
     })
       .catch(err => {
-       res.status(500).json({ success: false, message: err });
+       res.status(500).json({ success: true, message: err });
     })
   });
 };
@@ -90,7 +90,7 @@ const loginUserDetails = async (req, res, next) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({ success: false, message: err });
+      res.status(500).json({ success: true, message: err });
     });
 };
 
