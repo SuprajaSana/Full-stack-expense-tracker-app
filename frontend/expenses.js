@@ -33,7 +33,8 @@ function showPremiumUser() {
   parentNode.innerHTML =
     parentNode.innerHTML +
     "<h3>YOU ARE A PREMIUM USER NOW</h3>" +
-    "<button onclick='showLeaderBoard()'>Show Leaderboard</button>";
+    "<button onclick='showLeaderBoard()'>Show Leaderboard</button>"+
+  "<button onclick='downloadExpenses()'>Download Expenses</button>";
 }
 
 async function showLeaderBoard() {
