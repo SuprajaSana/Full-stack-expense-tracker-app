@@ -34,7 +34,7 @@ function showPremiumUser() {
     parentNode.innerHTML +
     "<h3>YOU ARE A PREMIUM USER NOW</h3>" +
     "<button onclick='showLeaderBoard()'>Show Leaderboard</button>" +
-    "<button onclick='downloadExpenses()'>Download Expenses</button>";
+    "<button onclick='downloadExpenses()' style='margin-left: 10px'>Download Expenses</button>";
 }
 
 async function downloadExpenses() {
@@ -57,6 +57,29 @@ async function downloadExpenses() {
   } catch (err) {
     document.body.innerHTML += `<div style="color:red;text-align:center;">${err.message}</div>`;
   }
+}
+
+async function showExpensesPastUrls() {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get("http://localhost:8000/get/expensefiles", {
+      headers: { Authorization: token },
+    });
+
+    for (var i = 0; i < response.data.expenseurls.length; i++) {
+      showURLsOnScreen(response.data.expenseurls[i].expenseurl);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function showURLsOnScreen(fileurl) {
+   const parentHTML = document.getElementById("pastdownloadedurls");
+   const parentNode = document.getElementById("downloadedurls");
+   const childHTML = `<li>${fileurl}></li>`;
+   parentHTML.innerHTML = "<h2>Past downloaded files</h2>";
+   parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
 
 async function showLeaderBoard() {
@@ -111,6 +134,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     const response = await axios.get("http://localhost:8000/get/expenses", {
       headers: { Authorization: token },
     });
+
+ showExpensesPastUrls();
 
     for (var i = 0; i < response.data.expenses.length; i++) {
       showListOnScreen(response.data.expenses[i]);

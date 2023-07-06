@@ -30,4 +30,10 @@ router.get(
   expensesController.downloadExpenses
 );
 
+router.get(
+  "/get/expensefiles",
+  userAuthentication.authenticate,
+  expensesController.getExpenseFiles
+);
+
 module.exports = router;

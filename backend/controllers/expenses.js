@@ -82,10 +82,25 @@ exports.downloadExpenses = async (req, res) => {
     const expenses = await UserServices.getExpenses(req);
     const stringifyExpenses = JSON.stringify(expenses);
     const userId = req.user.id;
-    const fileName = `Expenses${userId}/${new Date()}.txt`;
+    const fileName = `Expense${userId}/${new Date()}.txt`;
     const fileURL = await S3Services.uploadToS3(stringifyExpenses, fileName);
+    await req.user.createExpenseFile({
+      expenseurl:fileURL
+    })
     res.status(200).json({ fileURL, success: true })
   } catch (err) {
     res.status(500).json({fileURL:'', success: false,err:err })
   }
 }
+
+exports.getExpenseFiles = async (req, res, next) => {
+  await req.user
+    .getExpenseFiles()
+    .then((expenseurls) => {
+      res.status(200).json({ expenseurls: expenseurls });
+    })
+    .catch((err) => {
+      console.log(JSON.stringify(err));
+      res.status(500).json({ error: err });
+    });
+};
