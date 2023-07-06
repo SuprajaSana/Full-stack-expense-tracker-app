@@ -1,5 +1,9 @@
 const Expenses = require("../models/expenses");
 const sequelize = require("../util/database");
+const UserServices = require('../services/userservices');
+const S3Services=require('../services/s3services')
+
+require("dotenv").config();
 
 exports.getExpenses = async (req, res, next) => {
   await req.user
@@ -49,23 +53,6 @@ exports.postDeleteExpenses = async (req, res, next) => {
  const t = await sequelize.transaction();
   try {
   const expenseId = req.params.id;
- /* await Expenses.destroy({
-    where: { id: expenseId, userDetailId: req.user.id },
-  })
-    .then((noOfRows) => {
-      if (noOfRows === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Trying to delete expense does not belongs to you",
-        });
-      }
-      return res
-        .status(200)
-        .json({ success: true, message: "Deleted Successfully" });
-    })
-    .catch((err) => {
-      res.status(500).json({ success: false, message: err });
-    }); */
     const expense = await req.user.getExpenses(
       { where: { id: expenseId } },
       { transaction: t }
@@ -89,3 +76,16 @@ exports.postDeleteExpenses = async (req, res, next) => {
     return res.status(500).json({ error: err });
   }
 };
+
+exports.downloadExpenses = async (req, res) => {
+  try {
+    const expenses = await UserServices.getExpenses(req);
+    const stringifyExpenses = JSON.stringify(expenses);
+    const userId = req.user.id;
+    const fileName = `Expenses${userId}/${new Date()}.txt`;
+    const fileURL = await S3Services.uploadToS3(stringifyExpenses, fileName);
+    res.status(200).json({ fileURL, success: true })
+  } catch (err) {
+    res.status(500).json({fileURL:'', success: false,err:err })
+  }
+}

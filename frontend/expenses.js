@@ -33,8 +33,30 @@ function showPremiumUser() {
   parentNode.innerHTML =
     parentNode.innerHTML +
     "<h3>YOU ARE A PREMIUM USER NOW</h3>" +
-    "<button onclick='showLeaderBoard()'>Show Leaderboard</button>"+
-  "<button onclick='downloadExpenses()'>Download Expenses</button>";
+    "<button onclick='showLeaderBoard()'>Show Leaderboard</button>" +
+    "<button onclick='downloadExpenses()'>Download Expenses</button>";
+}
+
+async function downloadExpenses() {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(
+      "http://localhost:8000/download/expenses",
+      {
+        headers: { Authorization: token },
+      }
+    );
+    if (response.status === 200) {
+      var a = document.createElement("a");
+      a.href = response.data.fileURL;
+      a.download = "myexpenses.csv";
+      a.click();
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (err) {
+    document.body.innerHTML += `<div style="color:red;text-align:center;">${err.message}</div>`;
+  }
 }
 
 async function showLeaderBoard() {
@@ -58,7 +80,7 @@ function showLeaderBoardDetails(name, expenseamount) {
   const parentHTML = document.getElementById("leaderBoardDetails");
   const parentNode = document.getElementById("leaderBoard");
   const childHTML = `<li> ${name} - ${expenseamount}</li>`;
-  parentHTML.innerHTML = "<h2>Leader Board</h2>"
+  parentHTML.innerHTML = "<h2>Leader Board</h2>";
   parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
 
