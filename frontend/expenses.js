@@ -131,11 +131,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (isPremiumUser) {
       showPremiumUser();
     }
-    const response = await axios.get("http://localhost:8000/get/expenses", {
+    const page = 1;
+    const response = await axios.get(`http://localhost:8000/get/expenses?page=${page}`, {
       headers: { Authorization: token },
     });
 
- showExpensesPastUrls();
+    showExpensesPastUrls();
+    showPagination(response.data);
 
     for (var i = 0; i < response.data.expenses.length; i++) {
       showListOnScreen(response.data.expenses[i]);
@@ -213,3 +215,49 @@ document.getElementById("razpay").onclick = async function (e) {
     alert("TRANSACTION FAILED");
   });
 };
+
+
+function showPagination({
+  currentPage,
+  hasNextPage,
+  nextPage,
+  previousPage,
+  hasPreviousPage,
+  lastPage
+}) {
+
+  pagination.innerHTML = '';
+
+  if (hasPreviousPage) {
+    const btn2 = document.createElement('button');
+    btn2.innerHTML = previousPage;
+    btn2.addEventListener('click', () =>getExpenses(previousPage));
+    pagination.appendChild(btn2);
+  }
+
+  const btn1 = document.createElement("button");
+  btn2.innerHTML = currentPage;
+  btn2.addEventListener("click", () =>getExpenses(currentPage));
+  pagination.appendChild(btn1);
+
+  if (hasNextPage) {
+    const btn3 = document.createElement("button");
+    btn2.innerHTML = nextPage;
+    btn2.addEventListener("click", () =>getExpenses(nextPage));
+    pagination.appendChild(btn3);
+  }
+  
+}
+
+async function getExpenses(page) {
+  try{
+  const response = await axios.get(`http://localhost:8000/get/expenses?page=${page}`, {
+      headers: { Authorization: token },
+    });
+
+    showExpensesPastUrls();
+  showPagination(response.data);
+  } catch (err) {
+    console.log(err);
+  }
+}

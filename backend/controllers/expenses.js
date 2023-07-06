@@ -5,14 +5,22 @@ const S3Services=require('../services/s3services')
 
 require("dotenv").config();
 
+const ITEMS_PER_PAGE = 1;
+
 exports.getExpenses = async (req, res, next) => {
+
+  const page = req.query.page || 1;
+  const totalItems=3;
+
   await req.user
-    .getExpenses()
+    .getExpenses({
+      offset: (page - 1) * ITEMS_PER_PAGE,
+      limit:ITEMS_PER_PAGE
+    })
     .then((expenses) => {
-      res.status(200).json({ expenses: expenses });
+      res.status(200).json({ expenses: expenses,currentPage:page,hasNextPage:ITEMS_PER_PAGE*page<totalItems,nextPage:page+1,hasPreviousPage:page>1,previousPage:page-1,lastPage:Math.ceil(totalItems/ITEMS_PER_PAGE) });
     })
     .catch((err) => {
-      console.log(JSON.stringify(err));
       res.status(500).json({ error: err });
     });
 };
