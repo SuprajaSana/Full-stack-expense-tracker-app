@@ -7,7 +7,7 @@ const userAuthentication = require("../middleware/auth");
 const router = express.Router();
 
 router.get(
-  "/get/expenses?page=true",
+  "/get/expenses",
   userAuthentication.authenticate,
   expensesController.getExpenses
 );

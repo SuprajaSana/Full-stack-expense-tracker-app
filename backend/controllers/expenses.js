@@ -18,7 +18,7 @@ exports.getExpenses = async (req, res, next) => {
       limit:ITEMS_PER_PAGE
     })
     .then((expenses) => {
-      res.status(200).json({ expenses: expenses,currentPage:page,hasNextPage:ITEMS_PER_PAGE*page<totalItems,nextPage:page+1,hasPreviousPage:page>1,previousPage:page-1,lastPage:Math.ceil(totalItems/ITEMS_PER_PAGE) });
+      res.status(200).json({ expenses: expenses,currentPage:page,hasNextPage:ITEMS_PER_PAGE*page<totalItems,nextPage:Number(page)+1,hasPreviousPage:page>1,previousPage:Number(page)-1,lastPage:Math.ceil(totalItems/ITEMS_PER_PAGE) });
     })
     .catch((err) => {
       res.status(500).json({ error: err });

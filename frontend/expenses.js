@@ -75,11 +75,11 @@ async function showExpensesPastUrls() {
 }
 
 function showURLsOnScreen(fileurl) {
-   const parentHTML = document.getElementById("pastdownloadedurls");
-   const parentNode = document.getElementById("downloadedurls");
-   const childHTML = `<li>${fileurl}></li>`;
-   parentHTML.innerHTML = "<h2>Past downloaded files</h2>";
-   parentNode.innerHTML = parentNode.innerHTML + childHTML;
+  const parentHTML = document.getElementById("pastdownloadedurls");
+  const parentNode = document.getElementById("downloadedurls");
+  const childHTML = `<li>${fileurl}></li>`;
+  parentHTML.innerHTML = "<h2>Past downloaded files</h2>";
+  parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
 
 async function showLeaderBoard() {
@@ -132,16 +132,16 @@ window.addEventListener("DOMContentLoaded", async () => {
       showPremiumUser();
     }
     const page = 1;
-    const response = await axios.get(`http://localhost:8000/get/expenses?page=${page}`, {
-      headers: { Authorization: token },
-    });
+    const response = await axios.get(
+      `http://localhost:8000/get/expenses?page=${page}`,
+      {
+        headers: { Authorization: token },
+      }
+    );
 
     showExpensesPastUrls();
+    showListOnScreen(response.data.expenses[0]);
     showPagination(response.data);
-
-    for (var i = 0; i < response.data.expenses.length; i++) {
-      showListOnScreen(response.data.expenses[i]);
-    }
   } catch (err) {
     console.log(err);
   }
@@ -151,6 +151,7 @@ function showListOnScreen(expenses) {
   document.getElementById("category").value = "";
   document.getElementById("amount").value = "";
   const parentNode = document.getElementById("listOfExpenses");
+  parentNode.innerHTML = "";
   const childHTML = `<li id=${expenses.id}> ${expenses.description} - ${expenses.category} -${expenses.amount}
                     <button onclick=deleteExpenses('${expenses.id}')> Delete Expense </button>
                     </li>`;
@@ -216,47 +217,50 @@ document.getElementById("razpay").onclick = async function (e) {
   });
 };
 
-
 function showPagination({
   currentPage,
   hasNextPage,
   nextPage,
   previousPage,
   hasPreviousPage,
-  lastPage
+  lastPage,
 }) {
+  const pagination = document.getElementById("expensesPagination");
 
-  pagination.innerHTML = '';
+  pagination.innerHTML = "";
 
   if (hasPreviousPage) {
-    const btn2 = document.createElement('button');
+    const btn2 = document.createElement("button");
     btn2.innerHTML = previousPage;
-    btn2.addEventListener('click', () =>getExpenses(previousPage));
+    btn2.addEventListener("click", () => getExpenses(previousPage));
     pagination.appendChild(btn2);
   }
 
   const btn1 = document.createElement("button");
-  btn2.innerHTML = currentPage;
-  btn2.addEventListener("click", () =>getExpenses(currentPage));
+  btn1.innerHTML = currentPage;
+ // btn1.addEventListener("click", () => getExpenses(currentPage));
   pagination.appendChild(btn1);
 
   if (hasNextPage) {
     const btn3 = document.createElement("button");
-    btn2.innerHTML = nextPage;
-    btn2.addEventListener("click", () =>getExpenses(nextPage));
+    btn3.innerHTML = nextPage;
+    btn3.addEventListener("click", () => getExpenses(nextPage));
     pagination.appendChild(btn3);
   }
-  
 }
 
 async function getExpenses(page) {
-  try{
-  const response = await axios.get(`http://localhost:8000/get/expenses?page=${page}`, {
-      headers: { Authorization: token },
-    });
-
-    showExpensesPastUrls();
-  showPagination(response.data);
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(
+      `http://localhost:8000/get/expenses?page=${page}`,
+      {
+        headers: { Authorization: token },
+      }
+    );
+    showListOnScreen(response.data.expenses[0]);
+    showPagination(response.data);
+    console.log(id);
   } catch (err) {
     console.log(err);
   }
