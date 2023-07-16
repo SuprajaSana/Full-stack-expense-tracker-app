@@ -9,13 +9,13 @@ router.post("/user/signup", usersController.signUpUserDetails);
 
 router.post("/user/login", usersController.loginUserDetails);
 
-router.use("/forgotpassword", passwordController.forgotpassword);
+router.use("/user/forgotpassword", passwordController.forgotpassword);
 
 router.get(
   "/updatepassword/:resetpasswordid",
   passwordController.updatepassword
 );
 
-router.get("/resetpassword/:id", passwordController.resetpassword);
+router.get("/password/resetpassword/:id", passwordController.resetpassword);
 
 module.exports = router;

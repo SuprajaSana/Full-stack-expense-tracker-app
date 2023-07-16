@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const Forgotpassword = require("../models/password");
 
-exports.forgotpassword = async (req, res) => {
+const forgotpassword = async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ where: { email } });
@@ -22,16 +22,14 @@ exports.forgotpassword = async (req, res) => {
       const msg = {
         to: email,
         from: "yj.rocks.2411@gmail.com", 
-        subject: "Sending with SendGrid is Fun",
-        text: "and easy to do anywhere, even with Node.js",
+        subject: "Reset Password",
+        text: "Reset password using below link",
         html: `<a href="http://localhost:8000/password/resetpassword/${id}">Reset password</a>`,
       };
 
       sgMail
         .send(msg)
         .then((response) => {
-           console.log(response[0].statusCode)
-            console.log(response[0].headers)
             console.log(email)
           return res
             .status(response[0].statusCode)
@@ -43,8 +41,6 @@ exports.forgotpassword = async (req, res) => {
         .catch((error) => {
           throw new Error(error);
         });
-
-      //send mail
     } else {
       throw new Error("User doesnt exist");
     }
@@ -55,7 +51,7 @@ exports.forgotpassword = async (req, res) => {
 };
 
 
-exports.resetpassword = (req, res) => {
+const resetpassword = (req, res) => {
   const id = req.params.id;
   Forgotpassword.findOne({ where: { id } }).then((forgotpasswordrequest) => {
     if (forgotpasswordrequest) {
@@ -78,7 +74,7 @@ exports.resetpassword = (req, res) => {
   });
 };
 
-exports.updatepassword = (req, res) => {
+const updatepassword = (req, res) => {
   try {
     const { newpassword } = req.query;
     const { resetpasswordid } = req.params;
@@ -86,10 +82,7 @@ exports.updatepassword = (req, res) => {
       (resetpasswordrequest) => {
         User.findOne({ where: { id: resetpasswordrequest.userDetailId } }).then(
           (user) => {
-            // console.log('userDetails', user)
             if (user) {
-              //encrypt the password
-
               const saltRounds = 10;
               bcrypt.genSalt(saltRounds, function (err, salt) {
                 if (err) {
@@ -97,7 +90,6 @@ exports.updatepassword = (req, res) => {
                     throw new Error(err);
                 }
                 bcrypt.hash(newpassword, salt, function (err, hash) {
-                  // Store hash in your password DB.
                   if (err) {
                     console.log(err);
                     throw new Error(err);
@@ -122,3 +114,9 @@ exports.updatepassword = (req, res) => {
     return res.status(403).json({ error, success: false });
   }
 };
+
+module.exports = {
+  forgotpassword,
+  resetpassword,
+  updatepassword
+}

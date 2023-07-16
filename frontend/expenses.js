@@ -140,7 +140,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     );
 
     showExpensesPastUrls();
-    showListOnScreen(response.data.expenses[0]);
+       showListOnScreen(response.data.expenses);
     showPagination(response.data);
   } catch (err) {
     console.log(err);
@@ -152,10 +152,12 @@ function showListOnScreen(expenses) {
   document.getElementById("amount").value = "";
   const parentNode = document.getElementById("listOfExpenses");
   parentNode.innerHTML = "";
-  const childHTML = `<li id=${expenses.id}> ${expenses.description} - ${expenses.category} -${expenses.amount}
-                    <button onclick=deleteExpenses('${expenses.id}')> Delete Expense </button>
+  for (var i = 0; i < expenses.length; i++) {
+    const childHTML = `<li id=${expenses[i].id}> ${expenses[i].description} - ${expenses[i].category} -${expenses[i].amount}
+                    <button onclick=deleteExpenses('${expenses[i].id}')> Delete Expense </button>
                     </li>`;
-  parentNode.innerHTML = parentNode.innerHTML + childHTML;
+    parentNode.innerHTML = parentNode.innerHTML + childHTML;
+  }
 }
 async function deleteExpenses(id) {
   try {
@@ -258,9 +260,8 @@ async function getExpenses(page) {
         headers: { Authorization: token },
       }
     );
-    showListOnScreen(response.data.expenses[0]);
-    showPagination(response.data);
-    console.log(id);
+       showListOnScreen(response.data.expenses); 
+     showPagination(response.data);
   } catch (err) {
     console.log(err);
   }

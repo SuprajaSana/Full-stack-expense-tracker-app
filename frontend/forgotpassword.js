@@ -2,9 +2,13 @@ async function postEmailDetails(e) {
   e.preventDefault();
   const email = e.target.email.value;
 
+   const obj = {
+     email
+   };
+
   try {
-    const response = await axios.post("http://localhost:8000/user/forgotpassword", email);
-    if (response.status === 201) {
+    const response = await axios.post("http://localhost:8000/user/forgotpassword", obj);
+    if (response.status === 202) {
       window.location.href = "./login.html";
     } else {
       throw new Error("Failed to submit email");

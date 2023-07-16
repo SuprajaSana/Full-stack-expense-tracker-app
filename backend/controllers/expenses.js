@@ -10,7 +10,7 @@ const ITEMS_PER_PAGE = 1;
 exports.getExpenses = async (req, res, next) => {
 
   const page = req.query.page || 1;
-  const totalItems=3;
+  const totalItems=10;
 
   await req.user
     .getExpenses({
